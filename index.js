@@ -1,0 +1,88 @@
+const debug = require('debug')('yeps:server');
+
+const http = require('http');
+const https = require('https');
+const App = require('yeps');
+const assert = require('assert');
+
+const port = parseInt(process.env.PORT || '3000', 10);
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+/* istanbul ignore next */
+const onError = error => {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            debug(`${bind} requires elevated privileges`);
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            debug(`${bind} is already in use`);
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+};
+
+/**
+ * Event listener for HTTP server "listening" event
+ */
+/* istanbul ignore next */
+const onListening = server => {
+    const address = server.address();
+    const bind = typeof address === 'string' ? `pipe ${address}` : `port ${address.port}`;
+    debug(`Listening on ${bind}`);
+};
+
+/**
+ * Adding listeners to server
+ */
+const addListeners = server => {
+
+    /**
+     * Listen on provided port, on all network interfaces
+     */
+    server.on('listening', () => onListening(server));
+    server.on('error', onError);
+    server.listen(port);
+
+    /**
+     * Stop server
+     */
+    const stop = () => {
+        server.close(() => {
+            debug('Server stop');
+            process.exit();
+        });
+    };
+
+    /**
+     * Stop process
+     */
+    process.on('SIGINT', stop);
+    process.on('SIGTERM', stop);
+
+    return server;
+};
+
+module.exports = {
+    createHttpServer: app => {
+        assert(app instanceof App, 'App should be instance of YEPS!');
+
+        return addListeners(http.createServer(app.resolve()));
+    },
+    createHttpsServer: (options, app) => {
+        assert(app instanceof App, 'App should be instance of YEPS!');
+
+        return addListeners(https.createServer(options, app.resolve()));
+    },
+};
