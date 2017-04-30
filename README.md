@@ -42,6 +42,15 @@ app.js
     
     server.createHttpServer(app);
     
+With ssl
+
+    const options = {
+            key: readFileSync(resolve(__dirname, 'ssl', 'key.pem')),
+            cert: readFileSync(resolve(__dirname, 'ssl', 'cert.pem'))
+        };
+        
+    server.createHttpsServer(options, app);
+    
 Run
 
     PORT=3000 node app.js
