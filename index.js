@@ -48,13 +48,6 @@ const onListening = (server) => {
  */
 const addListeners = (server) => {
   /**
-   * Listen on provided port, on all network interfaces
-   */
-  server.on('listening', () => onListening(server));
-  server.on('error', onError);
-  server.listen(port);
-
-  /**
    * Stop server
    */
   const stop = () => {
@@ -63,6 +56,20 @@ const addListeners = (server) => {
       process.exit();
     });
   };
+
+  /**
+   * Listen on provided port, on all network interfaces
+   */
+  server.on('listening', () => onListening(server));
+  server.on('error', onError);
+  server.listen(port);
+
+  server.on('close', () => {
+    server.removeAllListeners();
+    process.removeListener('SIGINT', stop);
+    process.removeListener('SIGTERM', stop);
+  });
+
 
   /**
    * Stop process
