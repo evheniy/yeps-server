@@ -47,9 +47,9 @@ app.js
 With ssl
 
     const options = {
-            key: readFileSync(resolve(__dirname, 'ssl', 'key.pem')),
-            cert: readFileSync(resolve(__dirname, 'ssl', 'cert.pem'))
-        };
+        key: readFileSync(resolve(__dirname, 'ssl', 'key.pem')),
+        cert: readFileSync(resolve(__dirname, 'ssl', 'cert.pem'))
+    };
         
     server.createHttpsServer(options, app);
     
