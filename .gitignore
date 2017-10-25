@@ -3,4 +3,5 @@ coverage
 npm-debug.log
 node_modules
 .DS_Store
+package-lock.json
 logs/app.error.log

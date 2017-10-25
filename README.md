@@ -33,11 +33,13 @@ app.js
     const App = require('yeps');
     const server = require('yeps-server');
     const error = require('yeps-error');
+    const logger = require('yeps-logger');
     
     const app = new App();
     
     app.all([,
         error(),
+        logger(),
     ]);
     
     server.createHttpServer(app);
@@ -54,5 +56,34 @@ With ssl
 Run
 
     PORT=3000 node app.js
+    
+### With pem
+
+    npm i -S pem
+    
+app.js
+
+    const App = require('yeps');
+    const server = require('yeps-server');
+    const error = require('yeps-error');
+    const logger = require('yeps-logger');
+    const pem = require('pem');
+        
+    const app = new App();
+        
+    app.all([,
+        error(),
+        logger(),
+    ]); 
+    
+    const days = 1;
+    const selfSigned = true;
+    
+    pem.createCertificate({ days, selfSigned }, (err, { serviceKey: key, certificate: cert }) => {
+        if (err) {
+            throw err;
+        }
+        const srv = server.createHttpsServer({ key, cert }, app);
+    });
     
 #### [YEPS documentation](http://yeps.info/)
