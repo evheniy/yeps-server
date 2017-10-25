@@ -83,7 +83,7 @@ app.js
         if (err) {
             throw err;
         }
-        const srv = server.createHttpsServer({ key, cert }, app);
+        server.createHttpsServer({ key, cert }, app);
     });
     
 #### [YEPS documentation](http://yeps.info/)
