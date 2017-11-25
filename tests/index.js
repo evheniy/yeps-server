@@ -137,10 +137,9 @@ describe('YEPS server', async () => {
 
           isTestFinished = true;
 
-          srv.close();
-
           expect(isTestFinished).is.true;
-          done();
+
+          srv.close(done);
         });
     });
   });

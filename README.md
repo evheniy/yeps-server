@@ -28,7 +28,7 @@ It helps to run YEPS app as node.js server
 
 ## How to use
 
-app.js
+#### app.js
 
     const App = require('yeps');
     const server = require('yeps-server');
@@ -38,13 +38,13 @@ app.js
     const app = new App();
     
     app.all([,
-        error(),
-        logger(),
+      error(),
+      logger(),
     ]);
     
     server.createHttpServer(app);
     
-With ssl
+#### With ssl
 
     const options = {
         key: readFileSync(resolve(__dirname, 'ssl', 'key.pem')),
@@ -53,7 +53,7 @@ With ssl
         
     server.createHttpsServer(options, app);
     
-Run
+#### Run
 
     PORT=3000 node app.js
     
@@ -61,12 +61,14 @@ Run
 
     npm i -S pem
     
-app.js
+#### app.js
 
     const App = require('yeps');
     const server = require('yeps-server');
+    
     const error = require('yeps-error');
     const logger = require('yeps-logger');
+    
     const pem = require('pem');
         
     const app = new App();
@@ -86,4 +88,5 @@ app.js
         server.createHttpsServer({ key, cert }, app);
     });
     
+
 #### [YEPS documentation](http://yeps.info/)
