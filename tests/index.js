@@ -4,13 +4,13 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { readFileSync } = require('fs');
 const { resolve } = require('path');
-const pause = require('promise-pause-timeout');
 const pem = require('pem');
 const server = require('..');
 
-const { expect } = chai;
-
 chai.use(chaiHttp);
+
+const { expect, request } = chai;
+
 let app;
 const { exit } = process;
 
@@ -30,6 +30,8 @@ describe('YEPS server', async () => {
     });
   });
 
+  const stopServer = srv => new Promise(r => srv.close(r));
+
   it('should test http server', async () => {
     let isTestFinished = false;
 
@@ -40,7 +42,7 @@ describe('YEPS server', async () => {
 
     const srv = server.createHttpServer(app);
 
-    await chai.request(srv)
+    await request(srv)
       .get('/')
       .send()
       .then((res) => {
@@ -48,7 +50,7 @@ describe('YEPS server', async () => {
         isTestFinished = true;
       });
 
-    srv.close();
+    await stopServer(srv);
 
     expect(isTestFinished).is.true;
   });
@@ -69,7 +71,7 @@ describe('YEPS server', async () => {
     };
     const srv = server.createHttpsServer(options, app);
 
-    await chai.request(srv)
+    await request(srv)
       .get('/')
       .send()
       .then((res) => {
@@ -77,7 +79,7 @@ describe('YEPS server', async () => {
         isTestFinished = true;
       });
 
-    srv.close();
+    await stopServer(srv);
 
     expect(isTestFinished).is.true;
   });
@@ -98,13 +100,9 @@ describe('YEPS server', async () => {
 
     const srv = server.createHttpServer(app);
 
-    server.createHttpServer(app);
-
     process.emit('SIGTERM');
 
-    srv.close();
-
-    await pause(10);
+    await stopServer(srv);
 
     expect(isTestFinished).is.true;
   });
@@ -128,7 +126,7 @@ describe('YEPS server', async () => {
       }
       const srv = server.createHttpsServer({ key, cert }, app);
 
-      chai.request(srv)
+      request(srv)
         .get('/')
         .send()
         .end((e, res) => {
