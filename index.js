@@ -52,7 +52,6 @@ const addListeners = (server) => {
    */
   const stop = () => {
     server.close(() => {
-      debug('Server stop');
       process.exit();
     });
   };
@@ -65,6 +64,7 @@ const addListeners = (server) => {
   server.listen(port);
 
   server.on('close', () => {
+    debug('Server stop');
     server.removeAllListeners();
     process.removeAllListeners();
   });

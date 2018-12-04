@@ -137,7 +137,7 @@ describe('YEPS server', async () => {
 
           expect(isTestFinished).is.true;
 
-          srv.close(done);
+          srv.close(() => done());
         });
     });
   });
