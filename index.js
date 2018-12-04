@@ -66,8 +66,7 @@ const addListeners = (server) => {
 
   server.on('close', () => {
     server.removeAllListeners();
-    process.removeListener('SIGINT', stop);
-    process.removeListener('SIGTERM', stop);
+    process.removeAllListeners();
   });
 
 
